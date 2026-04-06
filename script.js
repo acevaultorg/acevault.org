@@ -35,29 +35,48 @@ document.querySelectorAll('.product-card, .value, .stat').forEach((el, i) => {
     el.classList.add('animate-in');
 });
 
-// Newsletter form
+// Newsletter form — Formspree AJAX
 const form = document.getElementById('signup-form');
 if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const input = form.querySelector('.cta-input');
         const btn = form.querySelector('button');
-        const email = input.value;
+        const email = input.value.trim();
 
         if (!email) return;
 
-        btn.textContent = 'Subscribed!';
-        btn.style.background = '#00D4AA';
-        input.value = '';
-        input.placeholder = 'You\'re in!';
-        input.disabled = true;
+        const action = form.getAttribute('action');
+        // If Formspree ID not set yet, skip submission silently
+        if (!action || action.includes('FORMSPREE_ID')) {
+            btn.textContent = 'Coming soon!';
+            setTimeout(() => { btn.textContent = 'Subscribe'; }, 2000);
+            return;
+        }
+
+        btn.textContent = 'Sending…';
         btn.disabled = true;
 
-        setTimeout(() => {
-            btn.textContent = 'Subscribe';
-            input.placeholder = 'you@company.com';
-            input.disabled = false;
+        try {
+            const res = await fetch(action, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            if (res.ok) {
+                btn.textContent = 'You\'re in!';
+                btn.style.background = '#00D4AA';
+                input.value = '';
+                input.placeholder = 'Check your inbox!';
+                input.disabled = true;
+            } else {
+                btn.textContent = 'Try again';
+                btn.disabled = false;
+            }
+        } catch {
+            btn.textContent = 'Try again';
             btn.disabled = false;
-        }, 3000);
+        }
     });
 }
