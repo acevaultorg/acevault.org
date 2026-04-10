@@ -238,10 +238,12 @@ window.addEventListener('unhandledrejection', function(e) {
         <div class="container">
             <h2>Stay ahead of the curve.</h2>
             <p>New tools, updates, and developer insights. No spam. Unsubscribe anytime.</p>
-            <form class="cta-form" id="signup-form" action="https://formspree.io/f/FORMSPREE_ID" method="POST">
-                <input type="email" name="email" placeholder="you@company.com" required aria-label="Email address" class="cta-input">
-                <button type="submit" class="btn btn-primary btn-lg">Subscribe</button>
-            </form>
+            <!-- Newsletter: mailto fallback until operator connects a real endpoint (Buttondown / Beehiiv / Formspree).
+                 The previous `formspree.io/f/FORMSPREE_ID` action was a placeholder pointing at a dead endpoint — every signup was silently lost.
+                 Mailto route captures intent reliably. Operator can swap in a proper form handler whenever the newsletter tool is chosen. -->
+            <a href="mailto:hello@acevault.org?subject=Subscribe%20me%20to%20the%20AceVault%20newsletter&body=Please%20add%20me%20to%20the%20AceVault%20newsletter.%0A%0AThanks!" class="btn btn-primary btn-lg cta-mailto-btn">
+                Subscribe via email &rarr;
+            </a>
             <p class="cta-note">Be first to know about new tools and updates.</p>
         </div>
     </section>
